@@ -15,6 +15,30 @@ router.get("/", (req, res, next) => {
     });
 });
 
+//GET PROJECTS ACTIONS BY ID
+router.get("/projects/:id/actions", (req, res) => {
+  projects
+    .findById(req.params.id)
+    .then((project) => {
+      if (!project) {
+        res.status(404).json({
+          message: "Project not found",
+        });
+      } else {
+        return projects.getProjectActions(req.params.id);
+      }
+    })
+    .then((actions) => {
+      res.json(actions);
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).json({
+        message: "Error getting actions",
+      });
+    });
+});
+
 //ADD PROJECT
 router.post("/projects", (req, res) => {
   if (!req.body.name || !req.body.description) {
@@ -59,6 +83,29 @@ router.put("/projects/:id", (req, res) => {
       console.log(error);
       res.status(500).json({
         message: "Error updating the project",
+      });
+    });
+});
+
+//DELETE PROJECT
+router.delete("/projects/:id", (req, res) => {
+  projects
+    .remove(req.params.id)
+    .then((count) => {
+      if (count > 0) {
+        res.status(200).json({
+          message: "The project has been destroyed",
+        });
+      } else {
+        res.status(404).json({
+          message: "The project could not be found",
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).json({
+        message: "Error removing the project",
       });
     });
 });
