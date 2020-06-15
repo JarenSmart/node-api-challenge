@@ -1,0 +1,16 @@
+- [x] Mention two parts of Express that you learned about this week.
+
+  - Express allows for middleware to be setup
+  - Express allows you to dynamically render HTML pages based on passing arguments
+
+- [x] Describe Middleware?
+      middleware functions are functions that give you access to the request object and response object respectively.
+
+- [x] Describe a Resource?
+      A resource such as Express, are programs that are designed to carry out specific operations for a specific purpose
+
+- [x] What can the API return to help clients know if a request was successful?
+      a status code such as 201 or 200 --> representing a success.
+
+- [x] How can we partition our application into sub-applications?
+      By using separate routers, loggers and middleware to create a clean codebase.
