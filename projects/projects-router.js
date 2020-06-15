@@ -1,10 +1,17 @@
 const express = require("express");
 const projects = require("../data/helpers/projectModel");
+const actions = require("../data/helpers/actionModel");
 
 const router = express.Router();
+//WELCOME MESSAGE
+router.get("/", (req, res) => {
+  res.json({
+    message: "Welcome to the project API",
+  });
+});
 
 //GET ALL PROJECTS
-router.get("/", (req, res, next) => {
+router.get("/projects", (req, res, next) => {
   projects
     .get()
     .then((project) => {
@@ -81,35 +88,35 @@ router.post("/projects", (req, res) => {
     });
 });
 
-// //ADD ACTION BY PROJECT ID
-// router.post("/:id/actions", (req, res, next) => {
-//   projects
-//     .findById(req.params.id)
-//     .then((project) => {
-//       if (project) {
-//         req.project = project;
-//         next();
-//       } else {
-//         res.status(400).json({
-//           message: "Invalid project id",
-//         });
-//       }
-//     })
-//     .catch(next);
+//ADD ACTION BY PROJECT ID
+router.post("/projects/:id/actions", (req, res) => {
+  const newAction = { project_id: req.params.id, ...req.body };
+  console.log(newAction);
 
-//   if (!req.body.description || !req.body.notes) {
-//     return res.status(400).json({
-//       message: "Need a value for description or notes",
-//     });
-//   }
+  if (!req.body.description || !req.body.notes) {
+    return res.status(400).json({
+      errorMessage: "Please provide a description and notes for the action.",
+    });
+  }
 
-//   actions
-//     .insert(req.body)
-//     .then((action) => {
-//       res.status(201).json(action);
-//     })
-//     .catch(next);
-// });
+  actions
+    .insert(newAction)
+    .then((newAction) => {
+      if (newAction) {
+        res.status(201).json(newAction);
+      } else {
+        res.status(404).json({
+          message: "The project with the specified ID does not exist.",
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).json({
+        error: "There was an error while saving the action to the database",
+      });
+    });
+});
 
 //UPDATE PROJECT
 router.put("/projects/:id", (req, res) => {
@@ -157,6 +164,29 @@ router.delete("/projects/:id", (req, res) => {
       console.log(error);
       res.status(500).json({
         message: "Error removing the project",
+      });
+    });
+});
+
+//DELETE ACTION BY ID
+router.delete("/projects/:id/actions/:actionID", (req, res) => {
+  actions
+    .remove(req.params.id)
+    .then((count) => {
+      if (count > 0) {
+        res.status(200).json({
+          message: "The action has been destroyed",
+        });
+      } else {
+        res.status(404).json({
+          message: "The action could not be found",
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).json({
+        message: "Error removing the action",
       });
     });
 });
