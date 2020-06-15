@@ -169,7 +169,7 @@ router.delete("/projects/:id", (req, res) => {
 });
 
 //DELETE ACTION BY ID
-router.delete("/projects/:id/actions/:actionID", (req, res) => {
+router.delete("/actions/:id", (req, res) => {
   actions
     .remove(req.params.id)
     .then((count) => {
