@@ -39,6 +39,27 @@ router.get("/projects/:id/actions", (req, res) => {
     });
 });
 
+//GET A SINGLE ACTION OF A PROJECT BY ID
+router.get("/projects/:id/actions/:actionsID", (req, res) => {
+  projects
+    .findProjectActionByProjectId(req.params.id, req.params.actionsID)
+    .then((action) => {
+      if (action) {
+        res.json(action);
+      } else {
+        res.status(404).json({
+          message: "Action was not found",
+        });
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).json({
+        message: "Error getting the project action",
+      });
+    });
+});
+
 //ADD PROJECT
 router.post("/projects", (req, res) => {
   if (!req.body.name || !req.body.description) {
@@ -59,6 +80,36 @@ router.post("/projects", (req, res) => {
       });
     });
 });
+
+// //ADD ACTION BY PROJECT ID
+// router.post("/:id/actions", (req, res, next) => {
+//   projects
+//     .findById(req.params.id)
+//     .then((project) => {
+//       if (project) {
+//         req.project = project;
+//         next();
+//       } else {
+//         res.status(400).json({
+//           message: "Invalid project id",
+//         });
+//       }
+//     })
+//     .catch(next);
+
+//   if (!req.body.description || !req.body.notes) {
+//     return res.status(400).json({
+//       message: "Need a value for description or notes",
+//     });
+//   }
+
+//   actions
+//     .insert(req.body)
+//     .then((action) => {
+//       res.status(201).json(action);
+//     })
+//     .catch(next);
+// });
 
 //UPDATE PROJECT
 router.put("/projects/:id", (req, res) => {

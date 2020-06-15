@@ -7,6 +7,7 @@ module.exports = {
   update,
   remove,
   findById,
+  findProjectActionByProjectId,
   getProjectActions,
 };
 
@@ -55,6 +56,10 @@ function remove(id) {
 
 function findById(id) {
   return db("projects").where({ id }).first();
+}
+
+function findProjectActionByProjectId(actionsID, id) {
+  return db("actions").where({ id, project_id: actionsID }).first();
 }
 
 function getProjectActions(projectId) {
